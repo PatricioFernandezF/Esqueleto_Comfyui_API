@@ -1,6 +1,38 @@
 # Esqueleto_Comfyui_API
 
-2. El script se conectará al servidor especificado y comenzará a procesar los flujos de trabajo definidos en `workflow_api.json`.
+## Descripción
+Este proyecto proporciona un esqueleto para crear flujos de trabajo personalizados utilizando la API de ComfyUI. Está diseñado para ser un punto de partida, permitiéndote adaptarlo y expandirlo según tus necesidades específicas.
+
+## Requisitos Previos
+Para utilizar este proyecto, necesitas tener instalado Node.js en tu sistema. Puedes descargar e instalar Node.js desde [Node.js Official Website](https://nodejs.org/).
+
+## Instalación
+1. Clona el repositorio en tu máquina local usando:
+   ```
+   git clone <URL-del-repositorio>
+   ```
+2. Navega al directorio del proyecto clonado.
+3. Instala las dependencias del proyecto ejecutando:
+   ```
+   npm install
+   ```
+   Esto instalará todas las dependencias necesarias que están definidas en tu archivo `package.json`.
+
+### Instalación de Dependencias Específicas
+Para asegurarte de que todas las dependencias necesarias están instaladas, ejecuta los siguientes comandos:
+   ```
+   npm install ws uuid
+   ```
+   Esto instalará los módulos `ws` (WebSocket) y `uuid` que son cruciales para el funcionamiento del proyecto.
+
+## Ejecución
+Para ejecutar el script:
+1. Asegúrate de estar en el directorio del proyecto.
+2. Ejecuta el script con Node.js utilizando el comando:
+   ```
+   node main.js
+   ```
+   Reemplaza `main.js` con el nombre del archivo principal de tu proyecto si es diferente.
 
 ## Características Principales
 - Conexión WebSocket para comunicarse con el servidor de ComfyUI.
