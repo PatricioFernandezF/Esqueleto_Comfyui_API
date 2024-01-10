@@ -150,62 +150,19 @@ ws.on('message', async (data) => {
 
 // Main function to run the script
 async function main() {
-    promptWorkflow = await readWorkflowAPI();
-
-    // Assign nodes from the promptWorkflow
-    const chkpointLoaderNode = promptWorkflow["4"];
-    const promptPosNode = promptWorkflow["6"];
+    const promptWorkflow = await readWorkflowAPI();
+    
+    promptWorkflow["3"]["inputs"]["seed"] = Math.floor(Math.random() * 18446744073709551614) + 1;
     const emptyLatentImgNode = promptWorkflow["5"];
-    const kSamplerNode = promptWorkflow["13"];
-    const saveImageNode = promptWorkflow["9"];
-
-    // First, upload the image
+    emptyLatentImgNode["inputs"]["batch_size"] = 4;
     const uploadResponse = await uploadImage("imagen.png");
     
-    // If the server responds with an identifier or a filename, set it in the workflow node
-    promptWorkflow["31"]["inputs"]["image"] = uploadResponse.name;
+    //Si quieres subir imagenes, este es un ejemplo
+    //promptWorkflow["31"]["inputs"]["image"] = uploadResponse.name;
+    //promptId = await queuePrompt(promptWorkflow);
 
-    kSamplerNode["inputs"]["seed"] = Math.floor(Math.random() * 18446744073709551614) + 1;
-
-    promptId = await queuePrompt(promptWorkflow);
     console.log(`Queued prompt with ID: ${promptId}`);
 
-
-    // Load the checkpoint
-    //chkpointLoaderNode["inputs"]["ckpt_name"] = "crystalClearXL_ccxl.safetensors";
-
-    // Set image dimensions and batch size
-    /*
-    emptyLatentImgNode["inputs"]["width"] = 1024;
-    emptyLatentImgNode["inputs"]["height"] = 1024;
-    emptyLatentImgNode["inputs"]["batch_size"] = 1;
-    */
-
-    // Process each prompt
-    /*
-    for (let index = 0; index < promptList.length; index++) {
-        const prompt = promptList[index];
-
-        // Set the text prompt
-        promptPosNode["inputs"]["text"] = prompt;
-
-        // Set a random seed
-        kSamplerNode["inputs"]["seed"] = Math.floor(Math.random() * 18446744073709551614) + 1;
-
-        // Adjust height for the last prompt if required
-        if (index === 3) {
-            emptyLatentImgNode["inputs"]["height"] = 768;
-        }
-
-        // Set filename prefix
-        let fileprefix = prompt.slice(0, 100);
-        saveImageNode["inputs"]["filename_prefix"] = fileprefix;
-        
-        // Queue the prompt
-        promptId = await queuePrompt(promptWorkflow);
-        console.log(`Queued prompt with ID: ${promptId}`);
-    }*/
-    
 }
 
 // Run the main function
