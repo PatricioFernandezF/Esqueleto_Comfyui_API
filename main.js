@@ -1,10 +1,10 @@
 // Required Node.js modules
 const WebSocket = require('ws');
 const http = require('http');
-const https = require('https'); // For downloading images
 const fs = require('fs'); // Import the base fs module for createWriteStream
 const fsp = fs.promises; // Create a separate reference for promise-based functions
 const path = require('path');
+const FormData = require('form-data');
 const { v4: uuidv4 } = require('uuid');
 
 // Server details and client ID
@@ -17,6 +17,40 @@ const clientId = uuidv4(); // Replace with actual client ID or use a UUID genera
 async function readWorkflowAPI() {
     const data = await fsp.readFile(path.join(__dirname, 'workflow_api.json'), 'utf8');
     return JSON.parse(data);
+}
+
+
+// Function to upload an image
+async function uploadImage(filePath) {
+  // Create a new FormData instance
+  const formData = new FormData();
+  
+  // Append the file. The 'image' field corresponds to the name expected by the server.
+  formData.append('image', fs.createReadStream(filePath));
+
+  const options = {
+    hostname: '127.0.0.1',
+    port: 8188,
+    path: '/upload/image',
+    method: 'POST',
+    headers: formData.getHeaders() // Automatically sets the correct multipart header
+  };
+
+  return new Promise((resolve, reject) => {
+    // Make the request to the server
+    const req = http.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => { data += chunk; });
+      res.on('end', () => {
+        resolve(JSON.parse(data)); // The server should respond with some form of JSON
+      });
+    });
+
+    req.on('error', (e) => reject(e));
+    
+    // Pipe the form data into the request
+    formData.pipe(req);
+  });
 }
 
 // Function to queue prompt
@@ -116,25 +150,39 @@ ws.on('message', async (data) => {
 
 // Main function to run the script
 async function main() {
-    const promptWorkflow = await readWorkflowAPI();
-    const promptList = ["a dog is sitting on a beach"];
+    promptWorkflow = await readWorkflowAPI();
 
     // Assign nodes from the promptWorkflow
     const chkpointLoaderNode = promptWorkflow["4"];
     const promptPosNode = promptWorkflow["6"];
     const emptyLatentImgNode = promptWorkflow["5"];
-    const kSamplerNode = promptWorkflow["3"];
+    const kSamplerNode = promptWorkflow["13"];
     const saveImageNode = promptWorkflow["9"];
+
+    // First, upload the image
+    const uploadResponse = await uploadImage("imagen.png");
+    
+    // If the server responds with an identifier or a filename, set it in the workflow node
+    promptWorkflow["31"]["inputs"]["image"] = uploadResponse.name;
+
+    kSamplerNode["inputs"]["seed"] = Math.floor(Math.random() * 18446744073709551614) + 1;
+
+    promptId = await queuePrompt(promptWorkflow);
+    console.log(`Queued prompt with ID: ${promptId}`);
+
 
     // Load the checkpoint
     //chkpointLoaderNode["inputs"]["ckpt_name"] = "crystalClearXL_ccxl.safetensors";
 
     // Set image dimensions and batch size
+    /*
     emptyLatentImgNode["inputs"]["width"] = 1024;
     emptyLatentImgNode["inputs"]["height"] = 1024;
     emptyLatentImgNode["inputs"]["batch_size"] = 1;
+    */
 
     // Process each prompt
+    /*
     for (let index = 0; index < promptList.length; index++) {
         const prompt = promptList[index];
 
@@ -152,11 +200,12 @@ async function main() {
         // Set filename prefix
         let fileprefix = prompt.slice(0, 100);
         saveImageNode["inputs"]["filename_prefix"] = fileprefix;
-
+        
         // Queue the prompt
         promptId = await queuePrompt(promptWorkflow);
         console.log(`Queued prompt with ID: ${promptId}`);
-    }
+    }*/
+    
 }
 
 // Run the main function

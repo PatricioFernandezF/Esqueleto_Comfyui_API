@@ -1,22 +1,80 @@
 {
-  "3": {
+  "5": {
     "inputs": {
-      "seed": 968767452644790,
-      "steps": 20,
-      "cfg": 8,
-      "sampler_name": "euler",
-      "scheduler": "normal",
-      "denoise": 1,
+      "width": 512,
+      "height": 512,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "photo of a wizzarz",
+      "clip": [
+        "20",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "text, watermark",
+      "clip": [
+        "20",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "13",
+        0
+      ],
+      "vae": [
+        "20",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "13": {
+    "inputs": {
+      "add_noise": true,
+      "noise_seed": 168167080672596,
+      "cfg": 1,
       "model": [
-        "4",
+        "20",
         0
       ],
       "positive": [
-        "6",
+        "29",
         0
       ],
       "negative": [
         "7",
+        0
+      ],
+      "sampler": [
+        "14",
+        0
+      ],
+      "sigmas": [
+        "22",
         0
       ],
       "latent_image": [
@@ -24,63 +82,106 @@
         0
       ]
     },
-    "class_type": "KSampler"
+    "class_type": "SamplerCustom",
+    "_meta": {
+      "title": "SamplerCustom"
+    }
   },
-  "4": {
+  "14": {
     "inputs": {
-      "ckpt_name": "sd_xl_base_1.0.safetensors"
+      "sampler_name": "euler_ancestral"
     },
-    "class_type": "CheckpointLoaderSimple"
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "KSamplerSelect"
+    }
   },
-  "5": {
+  "20": {
     "inputs": {
-      "width": 1024,
-      "height": 1024,
-      "batch_size": 1
+      "ckpt_name": "sd_xl_turbo_1.0_fp16.safetensors"
     },
-    "class_type": "EmptyLatentImage"
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
   },
-  "6": {
+  "22": {
     "inputs": {
-      "text": "beautiful scenery a knight with sword",
-      "clip": [
-        "4",
-        1
-      ]
-    },
-    "class_type": "CLIPTextEncode"
-  },
-  "7": {
-    "inputs": {
-      "text": "text, watermark",
-      "clip": [
-        "4",
-        1
-      ]
-    },
-    "class_type": "CLIPTextEncode"
-  },
-  "8": {
-    "inputs": {
-      "samples": [
-        "3",
+      "steps": 1,
+      "denoise": 1,
+      "model": [
+        "20",
         0
-      ],
-      "vae": [
-        "4",
-        2
       ]
     },
-    "class_type": "VAEDecode"
+    "class_type": "SDTurboScheduler",
+    "_meta": {
+      "title": "SDTurboScheduler"
+    }
   },
-  "9": {
+  "25": {
     "inputs": {
-      "filename_prefix": "ComfyUI",
       "images": [
         "8",
         0
       ]
     },
-    "class_type": "SaveImage"
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "29": {
+    "inputs": {
+      "strength": 1,
+      "conditioning": [
+        "6",
+        0
+      ],
+      "control_net": [
+        "32",
+        0
+      ],
+      "image": [
+        "31",
+        0
+      ]
+    },
+    "class_type": "ControlNetApply",
+    "_meta": {
+      "title": "Apply ControlNet"
+    }
+  },
+  "31": {
+    "inputs": {
+      "image": "drawing_before.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "32": {
+    "inputs": {
+      "control_net_name": "diffusion_pytorch_model.fp16.safetensors"
+    },
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "Load ControlNet Model"
+    }
+  },
+  "33": {
+    "inputs": {
+      "image": "11 (1).jpg",
+      "link_id": 0,
+      "save_to_workflow": false,
+      "image_data": "",
+      "trigger_always": false
+    },
+    "class_type": "ImageReceiver",
+    "_meta": {
+      "title": "Image Receiver"
+    }
   }
 }
