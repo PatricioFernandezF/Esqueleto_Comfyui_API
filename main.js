@@ -155,9 +155,11 @@ async function main() {
     promptWorkflow["3"]["inputs"]["seed"] = Math.floor(Math.random() * 18446744073709551614) + 1;
     const emptyLatentImgNode = promptWorkflow["5"];
     emptyLatentImgNode["inputs"]["batch_size"] = 4;
-    const uploadResponse = await uploadImage("imagen.png");
     
     //Si quieres subir imagenes, este es un ejemplo
+    //const uploadResponse = await uploadImage("imagen.png");
+    
+    
     //promptWorkflow["31"]["inputs"]["image"] = uploadResponse.name;
     //promptId = await queuePrompt(promptWorkflow);
 
